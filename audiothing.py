@@ -1,7 +1,6 @@
 import os
 import pytube
 from mutagen.id3 import ID3, TIT2, TPE1, APIC
-from mutagen.mp3 import MP3
 
 
 def video_to_audio(url):
@@ -10,12 +9,14 @@ def video_to_audio(url):
     download_path = stream.download(output_path="data")
     print(download_path)
     BasePath, ext = os.path.splitext(download_path)
-    os.rename(download_path, BasePath+".mp3")
-    audio = ID3(BasePath+".mp3")
+    download_path = BasePath + ".mp3"
+    os.rename(download_path, download_path)
+    audio = ID3(download_path)
     audio["TIT2"] = TIT2(encoding=3, text=vid.title)
     audio["TPE1"] = TPE1(encoding=3, text=vid.author)
     audio.save()
-    # return
+    return download_path
+
 
 def check_tags():
     try:
@@ -31,12 +32,15 @@ def check_tags():
     tags["TPE1"] = TPE1(encoding=3, text="Joji TEST")
     print(tags)
 
-    tags["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover', data=open('thumbnails/thumbnail_4989697.jpg', 'rb').read())
+    tags["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',
+                        data=open('thumbnails/thumbnail_4989697.jpg', 'rb').read())
     tags.save("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
 
 
 def main():
     video_to_audio(input("Enter an URL "))
     # check_tags()
+
+
 if __name__ == "__main__":
     main()
