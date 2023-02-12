@@ -10,11 +10,14 @@ def video_to_audio(url):
     print(download_path)
     BasePath, ext = os.path.splitext(download_path)
     download_path = BasePath + ".mp3"
-    os.rename(download_path, download_path)
-    audio = ID3(download_path)
+    try:
+        os.rename(BasePath + ".mp4", download_path)
+    except FileExistsError:
+        pass
+    audio = ID3()
     audio["TIT2"] = TIT2(encoding=3, text=vid.title)
     audio["TPE1"] = TPE1(encoding=3, text=vid.author)
-    audio.save()
+    audio.save(download_path)
     return download_path
 
 

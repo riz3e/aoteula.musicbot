@@ -9,16 +9,21 @@ from thumbnail import download_preview
 
 
 async def mainfunc(message: Message):
-    if ("youtube.com" in message.text):
-        url = message.text
-        path = video_to_audio(url)
-        thumb_path = download_preview(url)
-        file = open(path)
-        thumb = open(thumb_path)
-        # message.reply_audio()
-        await message.reply_audio(audio=file, thumb=thumb)
-    else:
-        await message.reply(text="Что-то пошло не так")
+    # try:
+        if ("youtube.com" in message.text):
+            url = message.text
+            path = video_to_audio(url)
+            thumb_path = download_preview(url)
+            file = open(path, encoding="latin-1")
+            thumb = open(thumb_path, encoding="latin-1")
+            # message.reply_audio()
+            await message.reply_audio(audio=file, thumb=thumb)
+            print("sent")
+        else:
+            await message.reply(text="Что-то пошло не так")
+    # except Exception as ex:
+    #     await message.reply(text="Что-то пошло не так")
+    #     print(ex)
 
 
 async def reg_main(dp: Dispatcher):
