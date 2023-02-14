@@ -21,23 +21,23 @@ def video_to_audio(url):
     return download_path
 
 
-def check_tags():
-    try:
-        tags = ID3("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
-    except Exception as ex:
-        tags = ID3()
-        print(ex)
-
-    tags.save("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
-    print(tags)
-
-    tags["TIT2"] = TIT2(encoding=3, text="Pretty Boy TEST")
-    tags["TPE1"] = TPE1(encoding=3, text="Joji TEST")
-    print(tags)
-
-    tags["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',
-                        data=open('thumbnails/thumbnail_4989697.jpg', 'rb').read())
-    tags.save("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
+# def check_tags():
+#     try:
+#         tags = ID3("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
+#     except Exception as ex:
+#         tags = ID3()
+#         print(ex)
+#
+#     tags.save("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
+#     print(tags)
+#
+#     tags["TIT2"] = TIT2(encoding=3, text="Pretty Boy TEST")
+#     tags["TPE1"] = TPE1(encoding=3, text="Joji TEST")
+#     print(tags)
+#
+#     tags["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',
+#                         data=open('thumbnails/thumbnail_4989697.jpg', 'rb').read())
+#     tags.save("data/Joji - Pretty Boy (ft Lil Yachty).mp3")
 
 
 def main():

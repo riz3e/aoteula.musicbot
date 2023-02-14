@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 import config
+from bot_data import dp, bot
 from tgbot.handlers.mainfunc import reg_main
 from tgbot.handlers.start import reg_user_start
 
@@ -21,8 +22,7 @@ async def main():
     )
     logger.info("Starting bot")
 
-    bot = Bot(token=config.BOT_TOKEN, parse_mode="HTML")
-    dp = Dispatcher(bot, storage=MemoryStorage())
+
 
     await reg_all_handlers(dp)
 
