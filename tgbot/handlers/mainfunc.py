@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup
 from aiogram.types import Message
 
-from audiothing import video_to_audio
+from audiothing import audio
 from bot_data import bot
 from tgbot.states import State
 from thumbnail import download_preview
@@ -11,16 +11,19 @@ from thumbnail import download_preview
 
 async def mainfunc(message: Message):
     # try:
-    if ("youtube.com" in message.text):
         url = message.text
-        path = video_to_audio(url)
-        thumb_path = download_preview(url)
-        audiofile = open(path, mode="rb")
-        thumbfile = open(thumb_path, mode="rb")
-        await bot.send_audio(message.from_id, audio=audiofile, thumb=thumbfile, )
-        print("sent")
-    else:
-        await message.reply(text="Что-то пошло не так")
+        try:
+            audiofile = audio(url)
+            path = audiofile.download_path
+            thumb_path = download_preview(audiofile.thumbnail_url)
+            audiof = open(path, mode="rb")
+            thumbf = open(thumb_path, mode="rb")
+            text = f"<a href='{message.text}'>origin</a> | <a href = 'https://t.me/Aoteulamusicbot'>from</a>"
+            await bot.send_audio(message.from_id, audio=audiof, thumb=thumbf, caption=text, parse_mode="HTML", duration=audiofile.duration, protect_content=False)
+            print("sent")
+        except:
+            await bot.send_message(message.from_id, text="Отправьте ссылку на YouTube видеоролик, аудио, которого хотите загрузить")
+
 
 
 # except Exception as ex:
