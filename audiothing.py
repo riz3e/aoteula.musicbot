@@ -1,21 +1,23 @@
 import os
 import pytube
 from mutagen.id3 import ID3, TIT2, TPE1, APIC
+from moviepy.editor import *
 
 
 class audio:
     def __init__(self, url):
-        vid = pytube.YouTube(url)
+        vid = pytube.YouTube(url,
+                             use_oauth=True,
+                             allow_oauth_cache=True)
         stream = vid.streams.filter(only_audio=True).first()
         download_path = stream.download(output_path="data")
         # print(download_path)
         duration = vid.length
         BasePath, ext = os.path.splitext(download_path)
+        FILETOCONVERT = AudioFileClip(download_path)
         download_path = BasePath + ".mp3"
-        try:
-            os.rename(BasePath + ".mp4", download_path)
-        except FileExistsError:
-            os.remove(BasePath + ".mp4")
+        FILETOCONVERT.write_audiofile(download_path)
+        FILETOCONVERT.close()
         audio = ID3()
         audio["TIT2"] = TIT2(encoding=3, text=vid.title)
         audio["TPE1"] = TPE1(encoding=3, text=vid.author)
@@ -55,7 +57,7 @@ class audio:
 
 
 def main():
-    audio(input("Enter an URL ")).download_path()
+    print(audio(input("Enter an URL ")).download_path)
     # check_tags()
 
 
