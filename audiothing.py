@@ -1,4 +1,3 @@
-import os
 import pytube
 from mutagen.id3 import ID3, TIT2, TPE1, APIC
 from moviepy.editor import *
@@ -8,7 +7,8 @@ class audio:
     def __init__(self, url):
         vid = pytube.YouTube(url,
                              use_oauth=True,
-                             allow_oauth_cache=True)
+                             allow_oauth_cache=True
+                             )
         stream = vid.streams.filter(only_audio=True).first()
         download_path = stream.download(output_path="data")
         # print(download_path)
