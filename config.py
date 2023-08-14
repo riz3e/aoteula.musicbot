@@ -1,2 +1,2 @@
-BOT_TOKEN = "6030678791:AAF_ZXKm-P_PLvmEA3zfi-7DFHK485N-N4E"
+BOT_TOKEN = ""
 bot_name = "Aoteula"
