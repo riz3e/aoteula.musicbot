@@ -5,6 +5,17 @@ from PIL import Image
 # to attach thumbnail to the audiofile
 # для того, чтобы получить превью для аудиофайла
 
+def convert_webp_to_jpg(path):
+    try:
+        with Image.open(path) as img:
+            img = img.convert("RGB")
+            # print(path[:-5]+".mp3")
+            img.save(path[:-5] + ".jpg", "JPEG")
+            print("Conversion successful: WebP to JPEG")
+            return path[:-5] + ".jpg"
+    except Exception as e:
+        print(f"Error converting WebP to JPEG: {e}")
+
 
 def normalizethumb(thumb_dir):  # cropping the image to 1:1 to attach to the audio
     try:
@@ -35,6 +46,11 @@ def download_preview(url, title="kek"):  # url of thumbnail, not a video
         thumb_dir = f"data/thumbnails/{title}.{ext}"
         with open(thumb_dir, "wb") as file:
             file.write(req.content)
+
+        normalizethumb(thumb_dir)
+
+        if (ext == "webp"):
+            thumb_dir = convert_webp_to_jpg(thumb_dir)
 
         return thumb_dir
     except Exception as e:

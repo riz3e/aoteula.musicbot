@@ -1,40 +1,51 @@
-import pytube
+import yt_dlp
 from mutagen.id3 import ID3, TIT2, TPE1, APIC
 from moviepy.editor import *
+
+from thumbnail import download_preview
 
 
 class audio:
     def __init__(self, url):
-        vid = pytube.YouTube(url,
-                             use_oauth=True,
-                             allow_oauth_cache=True
-                             )
-        stream = vid.streams.filter(only_audio=True).first()
-        download_path = stream.download(output_path="data")
-        # print(download_path)
-        duration = vid.length
-        BasePath, ext = os.path.splitext(download_path)
-        FILETOCONVERT = AudioFileClip(download_path)
-        download_path = BasePath + ".mp3"
-        FILETOCONVERT.write_audiofile(download_path)
-        FILETOCONVERT.close()
-        audio = ID3()
-        audio["TIT2"] = TIT2(encoding=3, text=vid.title)
-        audio["TPE1"] = TPE1(encoding=3, text=vid.author)
-        audio.save(download_path)
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'ffprobe_location': os.path.realpath(r"C:\Program Files\ffmpeg\bin\ffprobe.exe"),
+            'ffmpeg_location': os.path.realpath(r"C:\Program Files\ffmpeg\bin\ffmpeg.exe"),
+            # вот эту хуйню не трогать блять, которая ffmpeg
+            # иначе хуй найдешь след раз
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'outtmpl': f'title - aoteulabot',  # Название выходного mp3 файла
+        }
+
+        with yt_dlp.YoutubeDL(params=ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)  # retrieving info about video and uses for metadata
+            title = info_dict.get('title', '')
+            author = info_dict.get('uploader', '')
+            duration = info_dict.get('duration', 0)
+            thumbnail = info_dict.get('thumbnail', '')
+
+        ydl_opts['outtmpl'] = f'data/{title} - aoteulabot' # Video title
+        with yt_dlp.YoutubeDL(params=ydl_opts) as ydl:
+            ydl.download([url])
+
+        download_path = f'data/{title} - aoteulabot.mp3'
 
         self.download_path = download_path
-        self.thumbnail_url = vid.thumbnail_url
+        self.thumbnail = thumbnail  # link to the thumbnail
         self.duration = duration
 
-    # def duration(self):
-    #     return self.duration
-    #
-    # def thumbnail_url(self):
-    #     return self.thumbnail_url
-    #
-    # def download_path(self):
-    #     return self.download_path
+        thumb_dir = download_preview(url=thumbnail, title=f"{title} - {author}")
+
+        audio = ID3()
+        audio["TIT2"] = TIT2(encoding=3, text=title)
+        audio["TPE1"] = TPE1(encoding=3, text=author)
+        audio["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',
+                            data=open(thumb_dir, 'rb').read())
+        audio.save(download_path)
 
 
 # def check_tags():
