@@ -1,5 +1,3 @@
-import random
-
 import requests
 from PIL import Image
 
@@ -8,26 +6,39 @@ from PIL import Image
 # для того, чтобы получить превью для аудиофайла
 
 
-def normalizethumb(thumb_dir):
-    image = Image.open(thumb_dir)
-    # image = image.crop((80, 0, 560, 480))
-    image = image.crop((140, 60, 500, 420))
-    image = image.resize((320, 320), Image.LANCZOS)
-    image.save(thumb_dir)
+def normalizethumb(thumb_dir):  # cropping the image to 1:1 to attach to the audio
+    try:
+        with Image.open(thumb_dir) as img:
+            width, height = img.size
+
+            # Calculate the size of the square crop
+            size = min(width, height)
+
+            # Calculate the cropping box to center the image
+            left = (width - size) // 2
+            top = (height - size) // 2
+            right = (width + size) // 2
+            bottom = (height + size) // 2
+
+            # Crop and save the image
+            cropped_img = img.crop((left, top, right, bottom))
+            cropped_img.save(thumb_dir)
+            print("Image cropped successfully.")
+    except Exception as e:
+        print(f"Error cropping image: {e}")
 
 
-def download_preview(url): # url of thumbnail, not a video
-    req = requests.get(url)
-    thumb_dir = f"thumbnails/хуй.jpg"
-    # id = random.randint(0, 99999999)
-    # thumb_dir = f"thumbnails/thumb_{id}.jpg"
-    with open(thumb_dir, "wb") as file:
-        file.write(req.content)
-    # print(f"Ready! your thumbnail saved in thumbnails\thubnail_{id}.jpg")
+def download_preview(url, title="kek"):  # url of thumbnail, not a video
+    try:
+        req = requests.get(url)
+        ext = url.split('.')[-1]
+        thumb_dir = f"data/thumbnails/{title}.{ext}"
+        with open(thumb_dir, "wb") as file:
+            file.write(req.content)
 
-    # normalizethumb(thumb_dir)
-
-    return thumb_dir
+        return thumb_dir
+    except Exception as e:
+        print(f"Error downloading image: {e}")
 
 
 def main():
@@ -35,7 +46,7 @@ def main():
     # download_preview(url=input("Enter URL of video which thumbnail you want to download: "))
     print("Normalizing thumbnail for uploading into telegram")
     link = input("Enter URL of video which thumbnail you want to download: ")
-    download_preview(url=link)
+    normalizethumb(download_preview(url=link))
 
 
 if __name__ == "__main__":
