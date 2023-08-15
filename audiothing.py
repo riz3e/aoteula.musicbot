@@ -28,24 +28,24 @@ class audio:
             duration = info_dict.get('duration', 0)
             thumbnail = info_dict.get('thumbnail', '')
 
-        ydl_opts['outtmpl'] = f'data/{title} - aoteulabot' # Video title
+        ydl_opts['outtmpl'] = f'data/{title} - {author} - aoteulabot'  # Video title
         with yt_dlp.YoutubeDL(params=ydl_opts) as ydl:
             ydl.download([url])
 
-        download_path = f'data/{title} - aoteulabot.mp3'
-
-        self.download_path = download_path
-        self.thumbnail = thumbnail  # link to the thumbnail
-        self.duration = duration
+        download_path = f'data/{title} - {author} - aoteulabot.mp3'
 
         thumb_dir = download_preview(url=thumbnail, title=f"{title} - {author}")
 
-        audio = ID3()
-        audio["TIT2"] = TIT2(encoding=3, text=title)
-        audio["TPE1"] = TPE1(encoding=3, text=author)
-        audio["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',
-                            data=open(thumb_dir, 'rb').read())
-        audio.save(download_path)
+        audiofile = ID3()
+        audiofile["TIT2"] = TIT2(encoding=3, text=title)  # setting the title
+        audiofile["TPE1"] = TPE1(encoding=3, text=author)  # setting the author
+        audiofile["APIC"] = APIC(encoding=3, mime='image/jpeg', type=3, desc='Cover',  # setting the thumbnail
+                                 data=open(thumb_dir, 'rb').read())
+        audiofile.save(download_path)
+
+        self.download_path = download_path
+        self.thumbnail = thumb_dir  # link to the thumbnail
+        self.duration = duration
 
 
 # def check_tags():
