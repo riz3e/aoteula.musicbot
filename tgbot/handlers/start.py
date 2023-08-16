@@ -7,7 +7,7 @@ from tgbot.states import State
 
 
 async def user_start(message: Message):
-    await message.answer(f"Привет, я музыкальный бот {bot_name}, присылай мне URL видео, аудио которого нужно вам.")
+    await message.answer(f"Привет, я музыкальный бот {bot_name}, присылай мне URL видео на YouTube, аудио которого нужно вам.")
     await State.main.set()
 
 
