@@ -32,7 +32,8 @@ async def mainfunc(message: Message):
             path = audiofile.download_path
             thumb_path = audiofile.thumbnail
             audiof = open(path, mode="rb")
-            thumbf = open(thumb_path, mode="rb")
+            if (thumb_path != "errorthing"):
+                thumbf = open(thumb_path, mode="rb")
             text = f"<a href='{message.text}'>origin</a> | <a href = 'https://t.me/Aoteulamusicbot'>from</a>"
             await bot.send_audio(message.from_id, audio=audiof, thumb=thumbf, caption=text, parse_mode="HTML",
                                  duration=audiofile.duration, protect_content=False)

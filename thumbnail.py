@@ -21,25 +21,27 @@ def normalizethumb(thumb_dir):  # cropping the image to 1:1 to attach to the aud
     try:
         with Image.open(thumb_dir) as img:
             width, height = img.size
+            if (width == height):
+                # Calculate the size of the square crop
+                size = min(width, height)
 
-            # Calculate the size of the square crop
-            size = min(width, height)
+                # Calculate the cropping box to center the image
+                left = (width - size) // 2
+                top = (height - size) // 2
+                right = (width + size) // 2
+                bottom = (height + size) // 2
 
-            # Calculate the cropping box to center the image
-            left = (width - size) // 2
-            top = (height - size) // 2
-            right = (width + size) // 2
-            bottom = (height + size) // 2
-
-            # Crop and save the image
-            cropped_img = img.crop((left, top, right, bottom))
-            cropped_img.save(thumb_dir)
-            print("Image cropped successfully.")
+                # Crop and save the image
+                cropped_img = img.crop((left, top, right, bottom))
+                cropped_img.save(thumb_dir)
+                print("Image cropped successfully.")
+            else:
+                pass
     except Exception as e:
         print(f"Error cropping image: {e}")
 
 
-def download_preview(url, title="kek"):  # url of thumbnail, not a video
+def download_preview(url, title="kekwkekwkekwkewk"):  # url of thumbnail, not a video
     try:
         req = requests.get(url)
         ext = url.split('.')[-1]
@@ -55,7 +57,7 @@ def download_preview(url, title="kek"):  # url of thumbnail, not a video
         return thumb_dir
     except Exception as e:
         print(f"Error downloading image: {e}")
-
+        return "errorthing"
 
 def main():
     # print("Getting thumbnail of video!")
