@@ -24,11 +24,11 @@ class audio:
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'outtmpl': f'title - aoteulabot',  # Название выходного mp3 файла
+            'outtmpl': 'data/%(title)s - %(uploader)s - aoteulabot.%(ext)s',  # Название выходного mp3 файла
         }
 
         with yt_dlp.YoutubeDL(params=ydl_opts) as ydl:
-            info_dict = ydl.extract_info(url, download=False)  # retrieving info about video and uses for metadata
+            info_dict = ydl.extract_info(url, download=True)  # retrieving info about video and uses for metadata
             title = info_dict.get('title', '')
             author = info_dict.get('uploader', '')
             duration = info_dict.get('duration', 0)
@@ -36,9 +36,6 @@ class audio:
             print(thumbnail)
         title = normalize_filename(title)
         author = normalize_filename(author)
-        ydl_opts['outtmpl'] = f'data/{title} - {author} - aoteulabot'  # Video title
-        with yt_dlp.YoutubeDL(params=ydl_opts) as ydl:
-            ydl.download([url])
 
         download_path = f'data/{title} - {author} - aoteulabot.mp3'
         try:
